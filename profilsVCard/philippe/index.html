@@ -306,7 +306,7 @@ impression, téléphonie et infogérance — au service de votre productivité
       </svg>
       Ajouter à mes contacts
     </button>
-    <p class="cta-note">Mobile : ouverture automatique — PC : double-cliquez sur le fichier</p>
+    <p class="cta-note">Mobile : ajout direct — PC : téléchargement, puis ouvrez le fichier</p>
 
     <div class="actions-row">
       <a class="action-btn" href="https://fr.linkedin.com/company/djp-service-informatique" target="_blank" rel="noopener">
@@ -329,127 +329,17 @@ impression, téléphonie et infogérance — au service de votre productivité
   </div>
 </div>
 
-<div class="toast" id="toast">Ouverture de l'application Contacts...</div>
+<div class="toast" id="toast">Ouverture du contact...</div>
 
 <script>
-  // Données du contact
-  const contact = {
-    firstName: "Philippe",
-    lastName: "Siellet",
-    org: "DJP Service Informatique",
-    title: "Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk",
-    phone: "+33327701515",
-    note: "Standard : composez le 3 27 70 15 15 puis le choix n°2.",
-    email: "philippe.s@djpservice.com",
-    emailEcoles: "education@djpservice.com",
-    street: "Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré",
-    city: "Cambrai",
-    zip: "59400",
-    country: "France",
-    url: "https://djpservice.com",
-    photoFile: "photo.jpg"
-  };
-
-  // Récupération de la photo
-  async function getPhotoBase64(filename) {
-    try {
-      const res = await fetch(filename);
-      if (!res.ok) throw new Error("Image non trouvée");
-      const blob = await res.blob();
-      return await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(",")[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch (e) {
-      console.log("Photo non intégrée :", e);
-      return null;
-    }
-  }
-
-  // Création de la vCard
-  function buildVCard(c, photoBase64) {
-    const lines = [
-      "BEGIN:VCARD",
-      "VERSION:3.0",
-      `N:${c.lastName};${c.firstName};;;`,
-      `FN:${c.firstName} ${c.lastName}`,
-      `ORG:${c.org}`,
-      `TITLE:${c.title}`,
-      `TEL;TYPE=WORK,VOICE:${c.phone}`,
-      `EMAIL;TYPE=WORK:${c.email}`,
-      `EMAIL;TYPE=WORK:${c.emailEcoles}`,
-      `ADR;TYPE=WORK:;;${c.street};${c.city};;${c.zip};${c.country}`,
-      `URL;TYPE=WORK:${c.url}`,
-      `NOTE:${c.note}`
-    ];
-    if (photoBase64) {
-      lines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}`);
-    }
-    lines.push("END:VCARD");
-    return lines.join("\r\n");
-  }
-
-  // Détection mobile
-  function isMobile() {
-    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
-
-  // Clic sur le bouton
-  document.getElementById("addContact").addEventListener("click", async function() {
-    const btn = this;
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = "Chargement...";
+  document.getElementById("addContact").addEventListener("click", function() {
+    // Sur TOUS les appareils (mobile et PC), on ouvre le fichier contact.vcf
+    window.location.href = "contact.vcf";
     
-    const photoBase64 = await getPhotoBase64(contact.photoFile);
-    const vcard = buildVCard(contact, photoBase64);
-    
-    if (isMobile()) {
-      // MOBILE : Création d'un lien data URI qui ouvre directement l'app Contacts
-      const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      
-      // Création d'un lien invisible avec target="_blank" pour forcer l'ouverture
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.style.display = "none";
-      document.body.appendChild(link);
-      
-      // Simulation de clic
-      const event = new MouseEvent("click", {
-        view: window,
-        bubbles: true,
-        cancelable: true
-      });
-      link.dispatchEvent(event);
-      
-      // Nettoyage
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }, 1000);
-      
-    } else {
-      // PC : Téléchargement du fichier .vcf
-      const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${contact.firstName}-${contact.lastName}.vcf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 3000);
-    }
-
-    // Notification
+    // Affiche la notification
     const toast = document.getElementById("toast");
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 2500);
-    
-    btn.innerHTML = originalHTML;
   });
 </script>
 
