@@ -154,7 +154,7 @@
     letter-spacing:0.01em;
     cursor:pointer;
     transition:background 0.15s ease;
-    text-decoration: none; /* Empêche le soulignement du lien */
+    text-decoration: none;
   }
   .cta:hover{ background:var(--signal); }
   .cta svg{ width:17px; height:17px; flex-shrink:0; }
@@ -227,8 +227,27 @@
     opacity:1;
   }
 
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%) translateY(12px);
+    background:var(--ink);
+    color:#fff;
+    font-size:13.5px;
+    padding:12px 18px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+    white-space:nowrap;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
   @media (prefers-reduced-motion: reduce){
-    .cta{ transition:none; }
+    .cta, .toast{ transition:none; }
   }
 
   @media (max-width:480px){
@@ -280,8 +299,7 @@ impression, téléphonie et infogérance — au service de votre productivité
       </div>
     </div>
 
-    <!-- LE BOUTON EST MAINTENANT UN VRAI LIEN VERS LE FICHIER VCF -->
-    <a class="cta" href="contact.vcf" download="Philippe-Siellet.vcf">
+    <button class="cta" id="addContact" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
         <circle cx="9" cy="7" r="4"></circle>
@@ -289,11 +307,11 @@ impression, téléphonie et infogérance — au service de votre productivité
         <line x1="22" y1="11" x2="16" y2="11"></line>
       </svg>
       Ajouter à mes contacts
-    </a>
+    </button>
     
     <p class="cta-note">
-      <strong>iPhone :</strong> le contact s'ouvre directement, appuyez sur "Ajouter".<br>
-      <strong>Android :</strong> appuyez sur la notification de téléchargement pour ouvrir.
+      <strong>iPhone :</strong> le contact s'ouvre directement.<br>
+      <strong>Android :</strong> choisissez "Contacts" dans le menu de partage.
     </p>
 
     <div class="actions-row">
@@ -316,6 +334,70 @@ impression, téléphonie et infogérance — au service de votre productivité
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast">Ouverture du contact...</div>
+
+<script>
+  // Contenu de la vCard
+  const vcardContent = `BEGIN:VCARD
+VERSION:3.0
+N:Siellet;Philippe;;;
+FN:Philippe Siellet
+ORG:DJP Service Informatique
+TITLE:Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk
+TEL;TYPE=WORK,VOICE:+33327701515
+EMAIL;TYPE=WORK:philippe.s@djpservice.com
+EMAIL;TYPE=WORK:education@djpservice.com
+ADR;TYPE=WORK:;;Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré;Cambrai;;59400;France
+URL;TYPE=WORK:https://djpservice.com
+NOTE:Standard : composez le 3 27 70 15 15 puis le choix n°2.
+END:VCARD`;
+
+  document.getElementById("addContact").addEventListener("click", async function() {
+    const toast = document.getElementById("toast");
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+    if (isAndroid && navigator.share) {
+      // ANDROID : Utilise le Web Share API pour ouvrir le menu de partage natif
+      try {
+        const file = new File([vcardContent], "Philippe-Siellet.vcf", { type: "text/vcard" });
+        await navigator.share({
+          files: [file],
+          title: "Contact Philippe Siellet",
+          text: "Ajoutez mon contact"
+        });
+        toast.textContent = "Contact partagé !";
+      } catch (err) {
+        // Si l'utilisateur annule ou erreur, on télécharge quand même
+        downloadVcf();
+      }
+    } else if (isIOS) {
+      // IPHONE : Lien direct vers le fichier (Safari l'ouvre automatiquement)
+      window.location.href = "contact.vcf";
+      toast.textContent = "Ouverture du contact...";
+    } else {
+      // PC : Téléchargement classique
+      downloadVcf();
+      toast.textContent = "Contact téléchargé";
+    }
+    
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2500);
+  });
+
+  function downloadVcf() {
+    const blob = new Blob([vcardContent], { type: "text/vcard" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Philippe-Siellet.vcf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }
+</script>
 
 </body>
 </html>
