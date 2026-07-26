@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr"><head>
+<html lang="fr">
+<head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -264,7 +265,8 @@
   </div>
 
   <div class="body">
-    <img class="avatar" src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique5_files/photo_iCK9.jpg" alt="Photo de Philippe Siellet">
+    <!-- CORRIGÉ : Chemin vers photo.jpg dans le même dossier -->
+    <img class="avatar" src="photo.jpg" alt="Photo de Philippe Siellet">
     <p class="role-tag">Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk</p>
     <h1>Philippe Siellet</h1>
     <p class="org">Itinérant IT — <strong>DJP Service Informatique</strong></p>
@@ -323,8 +325,9 @@ impression, téléphonie et infogérance — au service de votre productivité
     <div class="trust">
       <p class="trust-label">Ils nous font confiance</p>
       <div class="trust-logos">
-        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique5_files/Rieux-en-cambresis_iCK9.jpg" alt="Mairie de Rieux-en-Cambrésis">
-        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique5_files/Haussy_iCK9.jpg" alt="Mairie de Haussy">
+        <!-- CORRIGÉ : Chemins vers les logos dans le même dossier -->
+        <img src="Rieux-en-cambresis.jpg" alt="Mairie de Rieux-en-Cambrésis">
+        <img src="Haussy.jpg" alt="Mairie de Haussy">
       </div>
     </div>
   </div>
@@ -333,26 +336,32 @@ impression, téléphonie et infogérance — au service de votre productivité
 <div class="toast" id="toast">Contact téléchargé</div>
 
 <script>
-  // ---- Données de la fiche : à modifier pour chaque collaborateur ----
+  // ---- 1. Données de la fiche (facile à modifier pour chaque collaborateur) ----
   const contact = {
     firstName: "Philippe",
     lastName: "Siellet",
     org: "DJP Service Informatique",
     title: "Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk",
     phone: "+33327701515",
-    note: "Standard : composez le 3 27 70 15 15 puis le choix n°2 pour joindre directement le service Helpdesk / Kwartz.",
+    note: "Standard : composez le 3 27 70 15 15 puis le choix n°2.",
     email: "philippe.s@djpservice.com",
     emailEcoles: "education@djpservice.com",
-    address: "Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré, 59400 Cambrai",
+    // L'adresse est découpée pour que le téléphone la reconnaisse mieux (Rue, Ville, Code Postal, Pays)
+    street: "Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré",
+    city: "Cambrai",
+    zip: "59400",
+    country: "France",
     url: "https://djpservice.com",
     profileUrl: "https://djp-service.github.io/profilsVCard/philippe",
-    photoFile: "photo.jpg"
+    // CORRIGÉ : photo.jpg existe bien dans votre dossier GitHub
+    photoFile: "photo.jpg" 
   };
 
-  // ---- Convertit une image en base64 pour l'intégrer directement dans le vCard ----
-  async function getPhotoBase64(filename){
-    try{
+  // ---- 2. Récupération de la photo en arrière-plan ----
+  async function getPhotoBase64(filename) {
+    try {
       const res = await fetch(filename);
+      if (!res.ok) throw new Error("Image non trouvée");
       const blob = await res.blob();
       return await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -360,14 +369,14 @@ impression, téléphonie et infogérance — au service de votre productivité
         reader.onerror = reject;
         reader.readAsDataURL(blob);
       });
-    }catch(e){
-      console.warn("Photo non intégrée au vCard :", e);
+    } catch (e) {
+      console.log("Photo non intégrée au vCard (ce n'est pas grave, le reste fonctionnera) :", e);
       return null;
     }
   }
 
-  // ---- Génération dynamique du vCard (aucun fichier .vcf à maintenir à part) ----
-  function buildVCard(c, photoBase64){
+  // ---- 3. Construction du format vCard standard (reconnu par tous les téléphones) ----
+  function buildVCard(c, photoBase64) {
     const lines = [
       "BEGIN:VCARD",
       "VERSION:3.0",
@@ -378,64 +387,51 @@ impression, téléphonie et infogérance — au service de votre productivité
       `TEL;TYPE=WORK,VOICE:${c.phone}`,
       `EMAIL;TYPE=WORK:${c.email}`,
       `EMAIL;TYPE=WORK:${c.emailEcoles}`,
-      `ADR;TYPE=WORK:;;${c.address};;;;`,
+      // Format d'adresse standardisé pour une meilleure reconnaissance par Android/iOS
+      `ADR;TYPE=WORK:;;${c.street};${c.city};;${c.zip};${c.country}`,
       `URL;TYPE=WORK:${c.url}`,
-      `URL;TYPE=Profil:${c.profileUrl}`,
       `NOTE:${c.note}`
     ];
-    if (photoBase64){
+    if (photoBase64) {
       lines.push(`PHOTO;ENCODING=b;TYPE=JPEG:${photoBase64}`);
     }
     lines.push("END:VCARD");
+    // \r\n est obligatoire pour le format vCard
     return lines.join("\r\n");
   }
 
-  // ---- Convertit une chaîne UTF-8 (avec accents) en base64, pour la data URI ----
-  function utf8ToBase64(str){
-    const bytes = new TextEncoder().encode(str);
-    let binary = "";
-    bytes.forEach(b => binary += String.fromCharCode(b));
-    return btoa(binary);
-  }
-
-  document.getElementById("addContact").addEventListener("click", async function(){
+  // ---- 4. Action au clic sur le bouton ----
+  document.getElementById("addContact").addEventListener("click", async function () {
+    const btn = this;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "Génération en cours..."; // Petit feedback visuel
+    
     const photoBase64 = await getPhotoBase64(contact.photoFile);
     const vcard = buildVCard(contact, photoBase64);
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    if (isMobile){
-      // Mobile : data URI directe (technique la plus fiable, y compris sur les
-      // navigateurs Android non-Chrome comme celui pré-installé sur Xiaomi/MIUI).
-      // Contrairement à un lien "blob", la data URI porte son type MIME de façon
-      // explicite et est reconnue nativement par l'app Contacts au clic.
-      const dataUri = `data:text/vcard;charset=utf-8;base64,${utf8ToBase64(vcard)}`;
-      const link = document.createElement("a");
-      link.href = dataUri;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      // PC : on force un vrai téléchargement du fichier .vcf. C'est nécessaire
-      // sur ordinateur, car c'est justement l'ouverture du fichier téléchargé
-      // (double-clic, ou clic sur "Ouvrir" dans la barre de téléchargement)
-      // qui déclenche l'appli associée par défaut (Outlook, Mail, Contacts Windows...).
-      const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${contact.firstName}-${contact.lastName}.vcf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 3000);
-    }
+    // Création d'un "fichier virtuel" (Blob) compatible PC, Android et iPhone récents
+    const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${contact.firstName}-${contact.lastName}.vcf`;
+    document.body.appendChild(link);
+    link.click(); // Déclenche le téléchargement ou l'ouverture directe
+    document.body.removeChild(link);
+    
+    // Nettoyage de la mémoire
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
 
+    // Remettre le bouton à l'état initial
+    btn.innerHTML = originalText;
+
+    // Afficher la petite notification (toast)
     const toast = document.getElementById("toast");
     toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 2200);
+    setTimeout(() => toast.classList.remove("show"), 2500);
   });
 </script>
 
-
-
-</body></html>
+</body>
+</html>
