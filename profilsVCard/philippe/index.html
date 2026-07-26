@@ -65,6 +65,16 @@
     padding:36px 28px 28px;
   }
 
+  .avatar{
+    display:block;
+    width:76px;
+    height:76px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid var(--line);
+    margin-bottom:18px;
+  }
+
   .role-tag{
     font-family:var(--mono);
     font-size:11.5px;
@@ -83,11 +93,20 @@
   }
 
   .org{
-    margin:0 0 26px;
+    margin:0 0 20px;
     font-size:15px;
     color:var(--ink-soft);
   }
   .org strong{ color:var(--ink); font-weight:600; }
+
+  .pitch{
+    margin:0 0 26px;
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    border-top:1px dashed var(--line);
+    padding-top:18px;
+  }
 
   .fields{
     border-top:1px dashed var(--line);
@@ -146,6 +165,66 @@
     color:var(--ink-soft);
   }
 
+  .actions-row{
+    display:flex;
+    gap:10px;
+    margin:12px 0 0;
+  }
+  .action-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--panel);
+    color:var(--ink);
+    border:1px solid var(--line);
+    padding:12px 14px;
+    font-family:var(--sans);
+    font-size:13.5px;
+    font-weight:600;
+    text-decoration:none;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .action-btn:hover{
+    border-color:var(--signal);
+    color:var(--signal);
+  }
+  .action-btn svg{ width:15px; height:15px; flex-shrink:0; }
+
+  .trust{
+    margin-top:32px;
+    padding-top:22px;
+    border-top:1px dashed var(--line);
+  }
+  .trust-label{
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  .trust-logos{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .trust-logos img{
+    height:34px;
+    width:auto;
+    max-width:110px;
+    object-fit:contain;
+    filter:grayscale(100%);
+    opacity:0.7;
+    transition:opacity 0.15s ease, filter 0.15s ease;
+  }
+  .trust-logos img:hover{
+    filter:grayscale(0%);
+    opacity:1;
+  }
+
   .toast{
     position:fixed;
     left:50%;
@@ -184,9 +263,16 @@
   </div>
 
   <div class="body">
+    <img class="avatar" src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique%20photo_files/photo_fj3e.jpg" alt="Photo de Philippe Siellet">
     <p class="role-tag">Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk</p>
     <h1>Philippe Siellet</h1>
     <p class="org">Itinérant IT — <strong>DJP Service Informatique</strong></p>
+
+    <p class="pitch">Depuis 1998, DJP Service Informatique accompagne 
+entreprises, collectivités et établissements scolaires du Cambrésis avec
+ des solutions informatiques fiables : infrastructure, réseau, 
+impression, téléphonie et infogérance — au service de votre productivité
+ au quotidien.</p>
 
     <div class="fields">
       <div class="field">
@@ -221,6 +307,25 @@
       Ajouter à mes contacts
     </button>
     <p class="cta-note">Fichier .vcf — compatible iPhone, Android, Outlook, Gmail</p>
+
+    <div class="actions-row">
+      <a class="action-btn" href="https://fr.linkedin.com/company/djp-service-informatique" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"></path></svg>
+        LinkedIn
+      </a>
+      <a class="action-btn" href="https://calendly.com/djp-maintenance-kwartz" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Rendez-vous
+      </a>
+    </div>
+
+    <div class="trust">
+      <p class="trust-label">Ils nous font confiance</p>
+      <div class="trust-logos">
+        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique%20photo_files/Rieux-en-cambresis_fj3e.jpg" alt="Mairie de Rieux-en-Cambrésis">
+        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique%20photo_files/Haussy_fj3e.jpg" alt="Mairie de Haussy">
+      </div>
+    </div>
   </div>
 </div>
 
@@ -237,7 +342,8 @@
     email: "philippe.s@djpservice.com",
     emailEcoles: "education@djpservice.com",
     address: "Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré, 59400 Cambrai",
-    url: "https://djp-service.github.io/profilsVCard/philippe"
+    url: "https://djp-service.github.io/profilsVCard/philippe",
+    photoUrl: "https://djp-service.github.io/profilsVCard/philippe/photo.jpg"
   };
 
   // ---- Génération dynamique du vCard (aucun fichier .vcf à maintenir à part) ----
@@ -253,6 +359,7 @@
       `EMAIL;TYPE=WORK:${c.email}`,
       `EMAIL;TYPE=WORK:${c.emailEcoles}`,
       `ADR;TYPE=WORK:;;${c.address};;;;`,
+      `PHOTO;VALUE=URI:${c.photoUrl}`,
       `URL:${c.url}`,
       "END:VCARD"
     ].join("\r\n");
