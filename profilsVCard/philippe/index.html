@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Philippe Siellet — DJP Service Informatique</title>
+<style>
+  :root{
+    --ink:#12181f;
+    --ink-soft:#3d4a58;
+    --paper:#eef1f0;
+    --panel:#ffffff;
+    --line:#d7ddd9;
+    --signal:#c8611f;
+    --signal-dim:#e9dccb;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+
+  .card{
+    width:100%;
+    max-width:440px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    position:relative;
+  }
+
+  /* Bandeau technique en haut, façon fiche d'intervention */
+  .card-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 24px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .card-head .dot{
+    display:inline-block;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--signal);
+    margin-right:8px;
+    position:relative;
+    top:-1px;
+  }
+
+  .body{
+    padding:36px 28px 28px;
+  }
+
+  .role-tag{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--signal);
+    margin:0 0 10px;
+  }
+
+  h1{
+    margin:0 0 4px;
+    font-size:28px;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    line-height:1.15;
+  }
+
+  .org{
+    margin:0 0 26px;
+    font-size:15px;
+    color:var(--ink-soft);
+  }
+  .org strong{ color:var(--ink); font-weight:600; }
+
+  .fields{
+    border-top:1px dashed var(--line);
+    padding-top:20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin-bottom:28px;
+  }
+
+  .field{
+    display:grid;
+    grid-template-columns:74px 1fr;
+    align-items:baseline;
+    gap:12px;
+  }
+  .field .k{
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .field a, .field .v{
+    color:var(--ink);
+    font-size:15px;
+    text-decoration:none;
+    word-break:break-word;
+  }
+  .field a:hover{ color:var(--signal); }
+
+  .cta{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:var(--ink);
+    color:#fff;
+    border:none;
+    padding:16px 20px;
+    font-family:var(--sans);
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .cta:hover{ background:var(--signal); }
+  .cta svg{ width:17px; height:17px; flex-shrink:0; }
+
+  .cta-note{
+    margin:12px 0 0;
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%) translateY(12px);
+    background:var(--ink);
+    color:#fff;
+    font-size:13.5px;
+    padding:12px 18px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+    white-space:nowrap;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cta, .toast{ transition:none; }
+  }
+
+  @media (max-width:480px){
+    .body{ padding:28px 20px 22px; }
+    h1{ font-size:25px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-head">
+    <span><span class="dot"></span>Profil actif</span>
+    <span>DJP · 2026</span>
+  </div>
+
+  <div class="body">
+    <p class="role-tag">Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk</p>
+    <h1>Philippe Siellet</h1>
+    <p class="org">Itinérant IT — <strong>DJP Service Informatique</strong></p>
+
+    <div class="fields">
+      <div class="field">
+        <span class="k">Tél.</span>
+        <a href="tel:+33327701515,,2">+33 3 27 70 15 15 (choix n°2)</a>
+      </div>
+      <div class="field">
+        <span class="k">Email</span>
+        <a href="mailto:philippe.s@djpservice.com">philippe.s@djpservice.com</a>
+      </div>
+      <div class="field">
+        <span class="k">Email écoles</span>
+        <a href="mailto:education@djpservice.com">education@djpservice.com</a>
+      </div>
+      <div class="field">
+        <span class="k">Adresse</span>
+        <span class="v">Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré, 59400 Cambrai</span>
+      </div>
+      <div class="field">
+        <span class="k">Site</span>
+        <a href="https://djpservice.com/" target="_blank" rel="noopener">djpservice.com</a>
+      </div>
+    </div>
+
+    <button class="cta" id="addContact" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <line x1="19" y1="8" x2="19" y2="14"></line>
+        <line x1="22" y1="11" x2="16" y2="11"></line>
+      </svg>
+      Ajouter à mes contacts
+    </button>
+    <p class="cta-note">Fichier .vcf — compatible iPhone, Android, Outlook, Gmail</p>
+  </div>
+</div>
+
+<div class="toast" id="toast">Contact téléchargé</div>
+
+<script>
+  // ---- Données de la fiche : à modifier pour chaque collaborateur ----
+  const contact = {
+    firstName: "Philippe",
+    lastName: "Siellet",
+    org: "DJP Service Informatique",
+    title: "Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk",
+    phone: "+33327701515,,2",
+    email: "philippe.s@djpservice.com",
+    emailEcoles: "education@djpservice.com",
+    address: "Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré, 59400 Cambrai",
+    url: "https://djp-service.github.io/profilsVCard/philippe"
+  };
+
+  // ---- Génération dynamique du vCard (aucun fichier .vcf à maintenir à part) ----
+  function buildVCard(c){
+    return [
+      "BEGIN:VCARD",
+      "VERSION:3.0",
+      `N:${c.lastName};${c.firstName};;;`,
+      `FN:${c.firstName} ${c.lastName}`,
+      `ORG:${c.org}`,
+      `TITLE:${c.title}`,
+      `TEL;TYPE=WORK,VOICE:${c.phone}`,
+      `EMAIL;TYPE=WORK:${c.email}`,
+      `EMAIL;TYPE=WORK:${c.emailEcoles}`,
+      `ADR;TYPE=WORK:;;${c.address};;;;`,
+      `URL:${c.url}`,
+      "END:VCARD"
+    ].join("\r\n");
+  }
+
+  document.getElementById("addContact").addEventListener("click", function(){
+    const vcard = buildVCard(contact);
+    const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${contact.firstName}-${contact.lastName}.vcf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    const toast = document.getElementById("toast");
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2200);
+  });
+</script>
+
+
+
+</body></html>
