@@ -1,0 +1,14 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Siellet;Philippe;;;
+FN:Philippe Siellet
+ORG:DJP Service Informatique
+TITLE:Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk
+TEL;TYPE=WORK,VOICE:+33327701515
+EMAIL;TYPE=WORK:philippe.s@djpservice.com
+EMAIL;TYPE=WORK:education@djpservice.com
+ADR;TYPE=WORK:;;Avenue de l'Europe, rond point de l'A2, Zone de Cantimpré;Cambrai;;59400;France
+URL;TYPE=WORK:https://djpservice.com
+URL;TYPE=LinkedIn:https://fr.linkedin.com/company/djp-service-informatique
+NOTE:Standard : composez le 3 27 70 15 15 puis le choix n°2.
+END:VCARD
