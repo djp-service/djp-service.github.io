@@ -71,6 +71,7 @@
     height:76px;
     border-radius:50%;
     object-fit:cover;
+    object-position:center 20%;
     border:1px solid var(--line);
     margin-bottom:18px;
   }
@@ -263,7 +264,7 @@
   </div>
 
   <div class="body">
-    <img class="avatar" src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique3_files/photo_hXVv.jpg" alt="Photo de Philippe Siellet">
+    <img class="avatar" src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique4_files/photo_gEkM.jpg" alt="Photo de Philippe Siellet">
     <p class="role-tag">Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk</p>
     <h1>Philippe Siellet</h1>
     <p class="org">Itinérant IT — <strong>DJP Service Informatique</strong></p>
@@ -306,7 +307,7 @@ impression, téléphonie et infogérance — au service de votre productivité
       </svg>
       Ajouter à mes contacts
     </button>
-    <p class="cta-note">Fichier .vcf — compatible iPhone, Android, Outlook, Gmail</p>
+    <p class="cta-note">Mobile : ajout direct — PC : téléchargement, puis ouvrez le fichier</p>
 
     <div class="actions-row">
       <a class="action-btn" href="https://fr.linkedin.com/company/djp-service-informatique" target="_blank" rel="noopener">
@@ -322,8 +323,8 @@ impression, téléphonie et infogérance — au service de votre productivité
     <div class="trust">
       <p class="trust-label">Ils nous font confiance</p>
       <div class="trust-logos">
-        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique3_files/Rieux-en-cambresis_hXVv.jpg" alt="Mairie de Rieux-en-Cambrésis">
-        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique3_files/Haussy_hXVv.jpg" alt="Mairie de Haussy">
+        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique4_files/Rieux-en-cambresis_gEkM.jpg" alt="Mairie de Rieux-en-Cambrésis">
+        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique4_files/Haussy_gEkM.jpg" alt="Mairie de Haussy">
       </div>
     </div>
   </div>
@@ -395,13 +396,26 @@ impression, téléphonie et infogérance — au service de votre productivité
     const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
     const url = URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${contact.firstName}-${contact.lastName}.vcf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobile){
+      // Mobile : navigation directe vers le fichier, sans forcer le téléchargement.
+      // iPhone/Android reconnaissent le type vCard et ouvrent directement
+      // la fiche "Ajouter ce contact", sans passer par le dossier de téléchargements.
+      window.location.href = url;
+    } else {
+      // PC : on force un vrai téléchargement du fichier .vcf. C'est nécessaire
+      // sur ordinateur, car c'est justement l'ouverture du fichier téléchargé
+      // (double-clic, ou clic sur "Ouvrir" dans la barre de téléchargement)
+      // qui déclenche l'appli associée par défaut (Outlook, Mail, Contacts Windows...).
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${contact.firstName}-${contact.lastName}.vcf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    }
 
     const toast = document.getElementById("toast");
     toast.classList.add("show");
