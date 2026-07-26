@@ -264,7 +264,7 @@
   </div>
 
   <div class="body">
-    <img class="avatar" src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique4_files/photo_gEkM.jpg" alt="Photo de Philippe Siellet">
+    <img class="avatar" src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique5_files/photo_iCK9.jpg" alt="Photo de Philippe Siellet">
     <p class="role-tag">Technicien orienté école (Serveur Kwartz) et Technicien Helpdesk</p>
     <h1>Philippe Siellet</h1>
     <p class="org">Itinérant IT — <strong>DJP Service Informatique</strong></p>
@@ -323,8 +323,8 @@ impression, téléphonie et infogérance — au service de votre productivité
     <div class="trust">
       <p class="trust-label">Ils nous font confiance</p>
       <div class="trust-logos">
-        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique4_files/Rieux-en-cambresis_gEkM.jpg" alt="Mairie de Rieux-en-Cambrésis">
-        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique4_files/Haussy_gEkM.jpg" alt="Mairie de Haussy">
+        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique5_files/Rieux-en-cambresis_iCK9.jpg" alt="Mairie de Rieux-en-Cambrésis">
+        <img src="Philippe%20Siellet%20%E2%80%94%20DJP%20Service%20Informatique5_files/Haussy_iCK9.jpg" alt="Mairie de Haussy">
       </div>
     </div>
   </div>
@@ -390,24 +390,37 @@ impression, téléphonie et infogérance — au service de votre productivité
     return lines.join("\r\n");
   }
 
+  // ---- Convertit une chaîne UTF-8 (avec accents) en base64, pour la data URI ----
+  function utf8ToBase64(str){
+    const bytes = new TextEncoder().encode(str);
+    let binary = "";
+    bytes.forEach(b => binary += String.fromCharCode(b));
+    return btoa(binary);
+  }
+
   document.getElementById("addContact").addEventListener("click", async function(){
     const photoBase64 = await getPhotoBase64(contact.photoFile);
     const vcard = buildVCard(contact, photoBase64);
-    const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     if (isMobile){
-      // Mobile : navigation directe vers le fichier, sans forcer le téléchargement.
-      // iPhone/Android reconnaissent le type vCard et ouvrent directement
-      // la fiche "Ajouter ce contact", sans passer par le dossier de téléchargements.
-      window.location.href = url;
+      // Mobile : data URI directe (technique la plus fiable, y compris sur les
+      // navigateurs Android non-Chrome comme celui pré-installé sur Xiaomi/MIUI).
+      // Contrairement à un lien "blob", la data URI porte son type MIME de façon
+      // explicite et est reconnue nativement par l'app Contacts au clic.
+      const dataUri = `data:text/vcard;charset=utf-8;base64,${utf8ToBase64(vcard)}`;
+      const link = document.createElement("a");
+      link.href = dataUri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } else {
       // PC : on force un vrai téléchargement du fichier .vcf. C'est nécessaire
       // sur ordinateur, car c'est justement l'ouverture du fichier téléchargé
       // (double-clic, ou clic sur "Ouvrir" dans la barre de téléchargement)
       // qui déclenche l'appli associée par défaut (Outlook, Mail, Contacts Windows...).
+      const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `${contact.firstName}-${contact.lastName}.vcf`;
